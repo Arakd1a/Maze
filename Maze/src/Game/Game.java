@@ -7,8 +7,9 @@ import org.newdawn.slick.state.*;
 public class Game extends StateBasedGame {
 
     public static final String NAME = "Maze";
+
+    public static final int HEIGHT = 640;
     public static final int WIDTH = 1280;
-    public static final int HEIGHT = 720;
     public static final boolean GAME_FULLSCREEN = false;
     public static final int MENU_STATE = 0;
     public static final int PLAY_STATE = 1;

@@ -1,8 +1,10 @@
 package World;
 
-import Game.Game;
-import Things.Wall;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Logger;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -10,44 +12,55 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Level {
 
-    ArrayList<Wall> walls;
-    int rowCount = (int) (Game.WIDTH / Wall.WIDTH);
-    int colCount = (int) (Game.HEIGHT / Wall.HEIGHT);
+    int tileSize = 32;
+    int[][] tileMap;
+    int mapWidth;
+    int mapHeight;
 
-    public Level() throws SlickException {
-        walls = new ArrayList();
+    public Level(String levelName) throws SlickException {
+        System.out.println("Building: ./res/levels/" + levelName + ".txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("./res/levels/" + levelName + ".txt"));
 
-        //Top + Bottom
-        for (int i = 0; i < rowCount * Wall.WIDTH; i += (int) Wall.WIDTH) {
-            walls.add(new Wall(i, 0));
-            walls.add(new Wall(i, (int) (Game.HEIGHT - Wall.HEIGHT)));
+            mapWidth = Integer.parseInt(br.readLine());
+            mapHeight = Integer.parseInt(br.readLine());
+            tileMap = new int[mapHeight][mapWidth];
+
+            String delimiter = " ";
+
+            for (int row = 0; row < mapHeight; row++) {
+                String line = br.readLine();
+                String[] tokens = line.split(delimiter);
+                for (int col = 0; col < mapWidth; col++) {
+                    tileMap[row][col] = Integer.parseInt(tokens[col]);
+                }
+            }
+            System.out.println("\n");
+            System.out.println("Loaded: ./res/levels/" + levelName + ".txt");
+        } catch (IOException e) {
+            Logger.getLogger(LevelBuilder.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
+            System.out.print("Could not read file:" + levelName);
         }
-        //Left + Right
-        for (int i = 0; i < colCount * Wall.HEIGHT; i += (int) Wall.HEIGHT) {
-            walls.add(new Wall(0, i));
-        }
-        for (int i = 0; i < colCount * Wall.HEIGHT; i += (int) Wall.HEIGHT) {
-            walls.add(new Wall((int) (Game.WIDTH - Wall.WIDTH), i));
-        }
+
     }
 
     public void render(Graphics g) throws SlickException {
-        for (int i = 0; i < walls.size(); i++) {
-            walls.get(i).render(g);
+        for(int row =0; row<mapHeight; row++){
+            for(int col=0; col<mapWidth; col++){
+                int tile = tileMap[row][col];
+                if(tile==0){
+                    g.setColor(Color.black);
+                }if(tile==1){
+                    g.setColor(Color.white);
+                }
+                g.fillRect(0 + col * tileSize, 0 + row * tileSize, tileSize, tileSize);
+            }
         }
-        g.drawRect(rowCount, rowCount, rowCount, rowCount);
 
     }
 
     public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-//        System.out.println("Row count: " + rowCount);
-//        System.out.println("Col count: " + colCount);
-        System.out.println("Walls size: " + walls.size());
-    }
-
-    public void createEdge() throws SlickException {
-
-        walls.add(new Wall(100, 100));
 
     }
 

@@ -1,13 +1,13 @@
 package States;
 
 
-import Things.Player;
-import World.Level;
+import Things.*;
+import World.*;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
 public class Play extends BasicGameState {
-
+    LevelBuilder levelBuilder;
     Level level;
     Player player;
  
@@ -18,7 +18,8 @@ public class Play extends BasicGameState {
     }
 
     public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
-        level = new Level();
+        level = new Level("level1");
+       
 
     }
 
